@@ -7,11 +7,24 @@ interface RecommendationData {
 }
 
 export function createRecommendationData(
+  name = faker.name.firstName() + " - " + faker.name.lastName(),
   youtubeLink = "https://www.youtube.com/watch?v=Z6d3BofQqN0"
 ) {
   return {
-    name: faker.name.findName(undefined, "-", undefined),
+    name,
     youtubeLink
+  };
+}
+
+export function createRecommendationDataWithScore(
+  name = faker.name.firstName() + " - " + faker.name.lastName(),
+  youtubeLink = "https://www.youtube.com/watch?v=Z6d3BofQqN0",
+  score = 0
+) {
+  return {
+    name,
+    youtubeLink,
+    score
   };
 }
 
@@ -29,4 +42,11 @@ export async function findManyRecommendations() {
 
 export async function findOneRecommendation(name: string) {
   return await prisma.recommendation.findUnique({ where: { name } });
+}
+
+export async function updateScoreToMinusFive(id: number) {
+  await prisma.recommendation.update({
+    where: { id },
+    data: { score: -5 }
+  });
 }
