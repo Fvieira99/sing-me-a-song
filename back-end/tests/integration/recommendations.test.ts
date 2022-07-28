@@ -1,8 +1,8 @@
-import { prisma } from "../src/database.js";
+import { prisma } from "../../src/database.js";
 import supertest from "supertest";
-import app from "../src/app.js";
-import * as recommendationFactory from "./factories/recommendationFactory.js";
-import * as scenarioFactory from "./factories/scenarioFactory.js";
+import app from "../../src/app.js";
+import * as recommendationFactory from "../factories/recommendationFactory.js";
+import * as scenarioFactory from "../factories/scenarioFactory.js";
 
 const agent = supertest(app);
 
@@ -10,7 +10,7 @@ beforeEach(async () => {
   await prisma.$executeRaw`TRUNCATE TABLE recommendations RESTART IDENTITY`;
 });
 
-describe("Recommendations test suit", () => {
+describe("POST /recommendations", () => {
   it("Should create new recommendation and return it", async () => {
     const recommendation = recommendationFactory.createRecommendationData();
 
@@ -35,7 +35,7 @@ describe("Recommendations test suit", () => {
     expect(response.statusCode).toBe(409);
   });
 
-  it("Should return 422 after trying to create recommendation with number name", async () => {
+  it("Should return 422 after trying to create recommendation with number on name property", async () => {
     const recommendation = {
       name: 10,
       youtubeLink: "https://www.youtube.com/watch?v=Z6d3BofQqN0"
@@ -54,7 +54,9 @@ describe("Recommendations test suit", () => {
 
     expect(response.statusCode).toBe(422);
   });
+});
 
+describe("POST /recommendations/:id/upvote", () => {
   it("Should upvote recommendation", async () => {
     const recommendation =
       await scenarioFactory.createDataAndInsertOneRecommendation();
@@ -81,7 +83,9 @@ describe("Recommendations test suit", () => {
 
     expect(response.statusCode).toBe(404);
   });
+});
 
+describe("POST /recommendations/:id/downvote", () => {
   it("Should downvote recommendation", async () => {
     const recommendation =
       await scenarioFactory.createDataAndInsertOneRecommendation();
@@ -126,14 +130,18 @@ describe("Recommendations test suit", () => {
     });
     expect(deletedRecommendation).toBeNull();
   });
+});
 
+describe("GET /recommendations", () => {
   it("Should return three recommendations", async () => {
     await scenarioFactory.createThreeRecommendations();
 
     const response = await agent.get("/recommendations");
     expect(response.body.length).toBe(3);
   });
+});
 
+describe("GET /recommendations/:id", () => {
   it("Should return one recommendation", async () => {
     await scenarioFactory.createThreeRecommendations();
 
@@ -149,6 +157,17 @@ describe("Recommendations test suit", () => {
     expect(response.body.name).toBe(recommendations[1].name);
   });
 
+  it("Should return 404 if passing nonexisting id", async () => {
+    await scenarioFactory.createThreeRecommendations();
+
+    const nonexistingId = 4;
+
+    const response = await agent.get(`/recommendations/${nonexistingId}`);
+    expect(response.statusCode).toBe(404);
+  });
+});
+
+describe("GET /recommendations/random", () => {
   it("Should return one random recommendation", async () => {
     await scenarioFactory.createTenRecommendationsWithRandomScores();
     const createdRecommendations = await prisma.recommendation.findMany();
@@ -157,7 +176,9 @@ describe("Recommendations test suit", () => {
     const response = await agent.get("/recommendations/random");
     expect(response.body).not.toBeNull();
   });
+});
 
+describe("GET /recommendations/top/:amount", () => {
   it("Should return 10 recommendations by score DESC", async () => {
     await scenarioFactory.createTenRecommendationsWithRandomScores();
     const amount = 10;
