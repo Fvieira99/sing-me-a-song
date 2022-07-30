@@ -8,8 +8,8 @@
     "build": "tsc",
     "start": "node dist/src/server.js",
     "dev": "nodemon src/server.ts",
-    "test": "dotenv -e .env.test prisma migrate dev &&  NODE_OPTIONS=--experimental-vm-modules dotenv -e .env.test jest ./integration/recommendations.test.ts -i",
-    "test:unit": "jest ./tests/unit/recommendationService.test.ts -i --coverage"
+    "test": "dotenv -e .env.test prisma migrate dev && NODE_OPTIONS=--experimental-vm-modules dotenv -e .env.test jest ./integration/recommendations.test.ts -i",
+    "test:unit": "NODE_OPTIONS=--experimental-vm-modules dotenv -e .env.test jest -- -i --coverage --testPathPattern=tests/unit"
   },
   "keywords": [],
   "author": "",
@@ -23,6 +23,7 @@
     "@types/joi": "^17.2.3",
     "@types/node": "^16.3.3",
     "@types/supertest": "^2.0.11",
+    "cross-env": "^7.0.3",
     "dotenv-cli": "^5.1.0",
     "eslint": "^7.32.0",
     "jest": "^28.0.3",
