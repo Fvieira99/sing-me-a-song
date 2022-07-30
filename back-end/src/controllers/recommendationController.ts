@@ -62,5 +62,5 @@ export const recommendationController = {
   random,
   getTop,
   get,
-  getById,
+  getById
 };

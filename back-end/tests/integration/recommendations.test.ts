@@ -192,5 +192,6 @@ describe("GET /recommendations/top/:amount", () => {
 });
 
 afterAll(async () => {
+  await prisma.$executeRaw`TRUNCATE TABLE recommendations RESTART IDENTITY`;
   prisma.$disconnect();
 });

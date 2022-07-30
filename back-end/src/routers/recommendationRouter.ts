@@ -1,5 +1,8 @@
 import { Router } from "express";
 import { recommendationController } from "../controllers/recommendationController.js";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const recommendationRouter = Router();
 
