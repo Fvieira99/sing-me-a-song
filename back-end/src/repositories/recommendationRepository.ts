@@ -1,4 +1,5 @@
 import { Prisma } from "@prisma/client";
+import { createRecommendationWithScoreData } from "../controllers/e2eTestController.js";
 import { prisma } from "../database.js";
 import { CreateRecommendationData } from "../services/recommendationsService.js";
 
@@ -73,6 +74,10 @@ async function deleteAll() {
   await prisma.recommendation.deleteMany();
 }
 
+async function createMany(data: createRecommendationWithScoreData[]) {
+  await prisma.recommendation.createMany({ data });
+}
+
 export const recommendationRepository = {
   create,
   findAll,
@@ -81,5 +86,6 @@ export const recommendationRepository = {
   updateScore,
   getAmountByScore,
   remove,
-  deleteAll
+  deleteAll,
+  createMany
 };

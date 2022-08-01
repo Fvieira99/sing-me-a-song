@@ -1,10 +1,6 @@
 import { faker } from "@faker-js/faker";
 import { prisma } from "../../src/database.js";
-
-interface RecommendationData {
-  name: string;
-  youtubeLink: string;
-}
+import { CreateRecommendationData } from "../../src/services/recommendationsService.js";
 
 export function createRecommendationData(
   name = faker.name.firstName() + " - " + faker.name.lastName(),
@@ -28,11 +24,13 @@ export function createRecommendationDataWithScore(
   };
 }
 
-export async function createRecommendation(data: RecommendationData) {
+export async function createRecommendation(data: CreateRecommendationData) {
   return await prisma.recommendation.create({ data });
 }
 
-export async function createManyRecommendations(data: RecommendationData[]) {
+export async function createManyRecommendations(
+  data: CreateRecommendationData[]
+) {
   await prisma.recommendation.createMany({ data });
 }
 
