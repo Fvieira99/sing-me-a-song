@@ -1,3 +1,8 @@
+beforeEach(() => {
+  cy.resetDatabase();
+  cy.createManyRecommendations();
+});
+
 describe("GET /recommendations/top/:amount", () => {
   it("Should return top recommendation", () => {
     cy.visit("");

@@ -1,3 +1,8 @@
+beforeEach(() => {
+  cy.resetDatabase();
+  cy.createManyRecommendations();
+});
+
 describe("GET /recommendations/random", () => {
   it("Should return 1 random recommendation", () => {
     cy.visit("");
